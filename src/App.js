@@ -1,11 +1,64 @@
-import { Animate } from './components/app';
-import './App.css';
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+
+//CAMERA
+
+const camera = new THREE.PerspectiveCamera( 30, window.innerWidth / window.innerHeight, 1, 1500 );
+camera.position.set(0,5,5);
+camera.lookAt(0,0,0)
+
+// RENDER
+
+const renderer = new THREE.WebGL1Renderer( {antialias:1} )
+renderer.setPixelRatio(window.devicePixelRatio)
+renderer.setSize(window.innerWidth, window.innerHeight)
+renderer.setAnimationLoop( animate );
+document.body.appendChild( renderer.domElement )
+
+//SCENE
+const scene = new THREE.Scene();
+scene.add(new THREE.GridHelper(4, 12, 0x808080))
+
+//Orbit controls
+
+const controls = new OrbitControls(camera, renderer.domElement)
+
+
+//Add objects to Scene
+const cube = new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshBasicMaterial({color:0x00ff00}))
+cube.position.x -=2
+scene.add(cube)
+
+const cone= new THREE.Mesh(new THREE.ConeGeometry(0.5,1,32),new THREE.MeshBasicMaterial({color:0xde3164}))
+cone.position.z += 2
+scene.add(cone)
+
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.75,32,32), new THREE.MeshBasicMaterial({color:0x0096FF}))
+sphere.position.x +=2
+scene.add (sphere)
+
+const torus = new THREE.Mesh(new THREE.TorusGeometry(0.5,0.1,16,32), new THREE.MeshBasicMaterial({color:0xffff01}))
+torus.position.z -=2
+scene.add (torus)
+
+export function animate(){
+requestAnimationFrame(animate)
+
+renderer.render(scene, camera)
+}
+//resizes canvas on window resize
+function onWindowResize(){
+    camera.aspect =window.innerWidth/window.innerHeight
+    camera.updateProjectionMatrix()
+    renderer.setSize(window.innerWidth, window.innerHeight)
+    
+}
+window.addEventListener('resize', onWindowResize)
 
 function App() {
   return (
     <div className="App">
-      <Animate/>
-   
+  
     </div>
   );
 }
